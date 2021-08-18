@@ -65,18 +65,14 @@ export const logOut = () => async dispatch => {
   dispatch(logoutRequest());
 
   try {
-    await axios.post('/users/logout');
+    const response = await axios.post('/users/logout');
 
-    token.unset();
-    dispatch(logoutSuccess());
+    token.unset(response.data.token);
+    dispatch(logoutSuccess(response.data));
+    return ;
   } catch (error) {
     dispatch(logoutError(error));
 
-    if (error.response.status === 500) {
-      toast.error('Oops! Server error! Please try later!');
-    } else {
-      toast.error('Something went wrong! Please reload the page!');
-    }
   }
 };
 
