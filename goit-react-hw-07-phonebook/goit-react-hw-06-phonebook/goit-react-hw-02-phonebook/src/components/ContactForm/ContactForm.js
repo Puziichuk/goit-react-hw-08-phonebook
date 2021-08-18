@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { contactsOperations, contactsSelectors } from '../../redux/contacts';
-import Cleave from 'cleave.js/react';
+import NumberFormat from 'react-number-format';
+import Button from '@material-ui/core/Button';
 import { toast } from 'react-toastify';
 import s from './ContactForm.module.css';
 
@@ -83,9 +84,11 @@ function ContactForm() {
       </label>
       <label className={s.label}>
         Number
-        <Cleave
-          options={{ delimiter: '-', blocks: [3, 2, 2] }}
-          placeholder="111-11-11"
+        <NumberFormat
+          placeholder="Enter phone number"
+          format="(###) ###-##-##"
+          mask="_"
+          pattern="^[0-9\s\(\)\-]{15}"
           type="tel"
           name="number"
           value={number}
@@ -94,10 +97,15 @@ function ContactForm() {
         />
       </label>
       {!isLoading && (
-      <button className={s.btn} type="submit">
-        Add contact
-      </button>
-      )} 
+     <Button
+     variant="contained"
+     color="secondary"
+     size="large"
+     type="submit"
+   >
+     Add contact
+   </Button>
+ )}
     </form>
   );
 }

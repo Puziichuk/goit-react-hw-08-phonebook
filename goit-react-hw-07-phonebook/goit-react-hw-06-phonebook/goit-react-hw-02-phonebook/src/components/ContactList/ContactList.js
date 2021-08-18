@@ -1,65 +1,64 @@
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { contactsOperations, contactsSelectors } from '../../redux/contacts';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ReactComponent as DeleteIcon } from '../../img/delete.svg';
+import { variants } from '../../untils/motionVar';
 import s from './ContactList.module.css';
 
 function ContactList() {
   const dispatch = useDispatch();
   const visibleContacts = useSelector(contactsSelectors.getVisibleContacts);
   const contacts = useSelector(contactsSelectors.getContacts);
-  const isLoading = useSelector(contactsSelectors.getLoading);
-  const error = useSelector(contactsSelectors.getError);
 
-  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
-
-
-    return (
-      <>
-        {contacts.length > 0 && !error && (
-          <motion.ul className={s.list}>
-            <AnimatePresence>
-              {visibleContacts.map(({ id, name, number }) => (
-                <motion.li
-                  className={s.item}
-                  key={id}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition="transition"
-                >
-                  <p className={s.info}>
-                    <b>{name}</b>
-                    <em>{number}</em>
-                  </p>
-                  <button
-                    className={s.btn}
-                    type="button"
-                    onClick={() => dispatch(contactsOperations.deleteContact(id))}
-                  >
-                    <DeleteIcon width="26" height="26" />
-                  </button>
-                </motion.li>
-              ))}
-            </AnimatePresence>
-          </motion.ul>
-        )}
-  
-        {!contacts.length && !error && !isLoading && (
+  return (
+    <>
+      {contacts.length > 0 && (
+        <motion.ul className={s.list}>
           <AnimatePresence>
-            <motion.p
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition="transition"
-            >
-              Your phonebook is empty. Please add contact.
-            </motion.p>
+            {visibleContacts.map(({ id, name, number }) => (
+              <motion.li
+                className={s.item}
+                key={id}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition="transition"
+                variants={variants}
+              >
+                <p className={s.info}>
+                  <b>{name}</b>
+                  <em>{number}</em>
+                </p>
+                <IconButton
+                  aria-label="delete"
+                  color="secondary"
+                  type="button"
+                  onClick={() => dispatch(contactsOperations.deleteContact(id))}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </motion.li>
+            ))}
           </AnimatePresence>
-        )}
-      </>
-    );
-  }
-  
-  export default ContactList;
+        </motion.ul>
+      )}
+
+      {!contacts.length && (
+        <AnimatePresence>
+          <motion.p
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition="transition"
+            variants={variants}
+          >
+            Your phonebook is empty. Please add contact.
+          </motion.p>
+        </AnimatePresence>
+      )}
+    </>
+  );
+}
+
+export default ContactList;
